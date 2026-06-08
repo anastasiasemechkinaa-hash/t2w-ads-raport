@@ -613,47 +613,7 @@
     </div>
   </div>
 
-  <!-- API INTEGRATION -->
-  <div class="api-card">
-    <h2>🔗 Jak podłączyć Claude do Meta Ads API?</h2>
-    <p class="sub-head">Automatyczne raporty z wpisywaniem nazwy reklamy i podglądem wyników w czasie rzeczywistym</p>
-    <div class="api-steps">
-      <div class="api-step">
-        <div class="step-num">01</div>
-        <h4>Meta Business → Token API</h4>
-        <p>
-          Wejdź do <strong>Meta for Developers</strong>, utwórz aplikację typu „Business",
-          wygeneruj <em>Access Token</em> z uprawnieniami <code>ads_read</code> i <code>ads_management</code>.
-          Token wklej do pliku <code>.env</code> projektu.
-        </p>
-        <code>META_ACCESS_TOKEN=...</code>
-      </div>
-      <div class="api-step">
-        <div class="step-num">02</div>
-        <h4>Mini-strona do wpisywania nazwy</h4>
-        <p>
-          Prosta strona HTML z polem tekstowym (fragment nazwy reklamy).
-          Po kliknięciu „Szukaj" zapytanie idzie do backendu (np. Python/Flask),
-          który odpytuje Meta API po <code>ad_name</code> i zwraca wydatki + konwersje.
-        </p>
-        <code>GET /ads?q=Masażyści</code>
-      </div>
-      <div class="api-step">
-        <div class="step-num">03</div>
-        <h4>Wyniki na ekranie</h4>
-        <p>
-          Odpowiedź pokazuje: <strong>spend</strong> (wydane złotówki),
-          <strong>impressions</strong>, <strong>clicks</strong>,
-          <strong>konwersje</strong> i <strong>koszt/wynik</strong>.
-          Odświeżenie = nowe dane z Meta API. Koszt wdrożenia: niski
-          (tylko hosting backendu ~0–20 zł/mies.).
-        </p>
-        <code>spend · cpm · cpc · conversions</code>
-      </div>
-    </div>
-  </div>
-
-  <div class="footer">
+<div class="footer">
     Przygotowane dla <strong>time2work</strong> · Kampania Meta Ads · Czerwiec 2026
   </div>
 
