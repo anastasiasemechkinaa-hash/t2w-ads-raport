@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>t2w Ads — Raport porównawczy budżetów</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700;800&display=swap');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Open Sans', sans-serif;
+      background: #f4f4f4;
+      color: #111;
+      padding: 40px 20px 60px;
+    }
+
+    /* ─── HEADER ─── */
+    .header {
+      background: #111;
+      border-radius: 16px;
+      padding: 36px 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 36px;
+    }
+    .header-left h1 {
+      color: #F5A000;
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: 1px;
+    }
+    .header-left p {
+      color: #ccc;
+      font-size: 13px;
+      margin-top: 6px;
+    }
+    .header-badge {
+      background: #F5A000;
+      color: #111;
+      font-weight: 800;
+      font-size: 13px;
+      padding: 8px 18px;
+      border-radius: 30px;
+      letter-spacing: 0.5px;
+    }
+
+    /* ─── SECTION TITLE ─── */
+    .section-title {
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: #F5A000;
+      margin-bottom: 12px;
+      padding-left: 4px;
+    }
+
+    /* ─── SUMMARY CARDS ─── */
+    .summary-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 40px;
+    }
+    .card {
+      background: #fff;
+      border-radius: 14px;
+      padding: 24px 28px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+    .card.orange { background: #F5A000; }
+    .card .label {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #888;
+      margin-bottom: 8px;
+    }
+    .card.orange .label { color: #111; opacity: 0.7; }
+    .card .value {
+      font-size: 34px;
+      font-weight: 800;
+      color: #111;
+    }
+    .card .sub {
+      font-size: 12px;
+      color: #aaa;
+      margin-top: 4px;
+    }
+    .card.orange .sub { color: #111; opacity: 0.6; }
+
+    /* ─── COMPARISON TABLE ─── */
+    .table-wrap {
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      overflow: hidden;
+      margin-bottom: 40px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+    thead tr {
+      background: #111;
+      color: #fff;
+    }
+    thead th {
+      padding: 14px 18px;
+      text-align: left;
+      font-weight: 700;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    thead th.accent { color: #F5A000; }
+    tbody tr { border-bottom: 1px solid #f0f0f0; }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: #fafafa; }
+    tbody td {
+      padding: 14px 18px;
+      vertical-align: middle;
+    }
+    .priority-badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .p1 { background: #FFE0B2; color: #BF360C; }
+    .p2 { background: #FFF9C4; color: #827717; }
+    .p3 { background: #E8F5E9; color: #2E7D32; }
+    .pw { background: #111; color: #F5A000; }
+
+    .num { font-weight: 700; color: #111; }
+    .num-orange { font-weight: 800; color: #F5A000; }
+    .num-gray { color: #999; font-size: 12px; }
+    .arrow { color: #F5A000; font-size: 18px; font-weight: 800; }
+    .diff-plus { color: #E65100; font-weight: 700; font-size: 12px; }
+    .diff-minus { color: #2E7D32; font-weight: 700; font-size: 12px; }
+
+    tfoot td {
+      background: #111;
+      color: #fff;
+      font-weight: 800;
+      font-size: 14px;
+      padding: 16px 18px;
+    }
+    tfoot td.accent { color: #F5A000; font-size: 18px; }
+
+    /* ─── SIDE BY SIDE TABLES ─── */
+    .two-tables {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 40px;
+    }
+    .table-block { overflow: hidden; border-radius: 14px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+    .table-block-header {
+      padding: 14px 20px;
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .table-block-header.before { background: #111; color: #fff; }
+    .table-block-header.before span { color: #F5A000; }
+    .table-block-header.after { background: #F5A000; color: #111; }
+    .table-block table { width: 100%; border-collapse: collapse; font-size: 13px; background: #fff; }
+    .table-block thead tr { background: #f7f7f7; }
+    .table-block thead th {
+      padding: 10px 14px;
+      text-align: left;
+      font-weight: 700;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #666;
+    }
+    .table-block tbody tr { border-bottom: 1px solid #f0f0f0; }
+    .table-block tbody tr:last-child { border-bottom: none; }
+    .table-block tbody td { padding: 12px 14px; vertical-align: middle; }
+    .table-block tfoot td {
+      background: #111;
+      color: #fff;
+      font-weight: 800;
+      font-size: 13px;
+      padding: 12px 14px;
+    }
+    .table-block.after-block tfoot td { background: #F5A000; color: #111; }
+    @media (max-width: 768px) {
+      .two-tables { grid-template-columns: 1fr; }
+    }
+
+    /* ─── SUGGESTION BOX ─── */
+    .suggest-wrap {
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+      margin-bottom: 40px;
+      overflow: hidden;
+    }
+    .suggest-header {
+      background: #F5A000;
+      padding: 16px 28px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .suggest-header h2 {
+      font-size: 16px;
+      font-weight: 800;
+      color: #111;
+    }
+    .suggest-header span { font-size: 20px; }
+    .suggest-body { padding: 28px; }
+    .suggest-body p {
+      font-size: 13px;
+      color: #555;
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+
+    .suggest-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    .suggest-table thead tr { background: #f7f7f7; }
+    .suggest-table thead th {
+      padding: 10px 14px;
+      text-align: left;
+      font-weight: 700;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #666;
+    }
+    .suggest-table tbody tr { border-bottom: 1px solid #f0f0f0; }
+    .suggest-table tbody td { padding: 12px 14px; }
+    .suggest-table tfoot td {
+      background: #111;
+      color: #fff;
+      font-weight: 800;
+      padding: 12px 14px;
+    }
+    .suggest-table tfoot td.accent { color: #F5A000; }
+
+    /* ─── INFO BLOCK ─── */
+    .info-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 40px;
+    }
+    .info-card {
+      background: #fff;
+      border-radius: 14px;
+      padding: 24px 28px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+    .info-card h3 {
+      font-size: 14px;
+      font-weight: 700;
+      color: #111;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .info-card h3 .dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: #F5A000;
+      flex-shrink: 0;
+    }
+    .info-card ul {
+      list-style: none;
+      padding: 0;
+    }
+    .info-card ul li {
+      font-size: 13px;
+      color: #555;
+      padding: 6px 0;
+      border-bottom: 1px solid #f5f5f5;
+      line-height: 1.5;
+    }
+    .info-card ul li:last-child { border-bottom: none; }
+    .info-card ul li strong { color: #111; }
+
+    /* ─── API BLOCK ─── */
+    .api-card {
+      background: #111;
+      border-radius: 14px;
+      padding: 32px 36px;
+      color: #fff;
+      margin-bottom: 40px;
+    }
+    .api-card h2 {
+      color: #F5A000;
+      font-size: 20px;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+    .api-card .sub-head {
+      color: #aaa;
+      font-size: 13px;
+      margin-bottom: 24px;
+    }
+    .api-steps {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+    .api-step {
+      background: #1e1e1e;
+      border-radius: 12px;
+      padding: 20px;
+    }
+    .api-step .step-num {
+      font-size: 28px;
+      font-weight: 800;
+      color: #F5A000;
+      margin-bottom: 8px;
+    }
+    .api-step h4 {
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 6px;
+    }
+    .api-step p {
+      font-size: 12px;
+      color: #999;
+      line-height: 1.5;
+    }
+    .api-step code {
+      display: inline-block;
+      background: #333;
+      color: #F5A000;
+      font-size: 11px;
+      padding: 2px 7px;
+      border-radius: 4px;
+      margin-top: 6px;
+      font-family: monospace;
+    }
+
+    /* ─── FOOTER ─── */
+    .footer {
+      text-align: center;
+      font-size: 12px;
+      color: #bbb;
+    }
+    .footer strong { color: #F5A000; }
+
+    @media (max-width: 768px) {
+      .summary-row { grid-template-columns: 1fr; }
+      .info-row { grid-template-columns: 1fr; }
+      .api-steps { grid-template-columns: 1fr; }
+      .header { flex-direction: column; gap: 16px; }
+      thead th, tbody td, tfoot td { padding: 10px 12px; font-size: 12px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-left">
+      <h1>t2w Ads — Raport budżetów</h1>
+      <p>Kampania rekrutacyjna Meta Ads · Analiza porównawcza PRZED / PO restrukturyzacji</p>
+    </div>
+    <div class="header-badge">Czerwiec 2026</div>
+  </div>
+
+  <!-- SUMMARY CARDS -->
+  <div class="section-title">Podsumowanie</div>
+  <div class="summary-row">
+    <div class="card">
+      <div class="label">Budżet dzienny — PRZED</div>
+      <div class="value">210 zł</div>
+      <div class="sub">5 zestawów · podział nierówny (Meta decyduje)</div>
+    </div>
+    <div class="card">
+      <div class="label">Budżet dzienny — PO</div>
+      <div class="value">310 zł</div>
+      <div class="sub">24 zestawy · każdy po 10 zł (równy podział)</div>
+    </div>
+    <div class="card orange">
+      <div class="label">Różnica</div>
+      <div class="value">+100 zł/dzień</div>
+      <div class="sub">Rekomendacja: zoptymalizuj priorytety → ~224 zł</div>
+    </div>
+  </div>
+
+  <!-- COMPARISON TABLES SIDE BY SIDE -->
+  <div class="section-title">Zestawienie PRZED i PO</div>
+  <div class="two-tables">
+
+    <!-- PRZED -->
+    <div class="table-block">
+      <div class="table-block-header before">⬛ <span>PRZED</span> — kampania akt_rekrutacja</div>
+      <table>
+        <thead>
+          <tr>
+            <th>Priorytet / Zestaw</th>
+            <th>Budżet grupy</th>
+            <th>Liczba reklam</th>
+            <th>Śr. zł/reklamę</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="priority-badge p1">P1 Pilne</span></td>
+            <td class="num">50 zł</td>
+            <td>6 reklam</td>
+            <td class="num-gray">~8,33 zł</td>
+          </tr>
+          <tr>
+            <td><span class="priority-badge p2">P2 Masażyści</span></td>
+            <td class="num">30 zł</td>
+            <td>3 reklamy</td>
+            <td class="num-gray">~10,00 zł</td>
+          </tr>
+          <tr>
+            <td><span class="priority-badge p2">P2 HORECA</span></td>
+            <td class="num">25 zł</td>
+            <td>7 reklam</td>
+            <td class="num-gray">~3,57 zł</td>
+          </tr>
+          <tr>
+            <td><span class="priority-badge p3">P3 Pozostałe</span></td>
+            <td class="num">25 zł</td>
+            <td>7 reklam</td>
+            <td class="num-gray">~3,57 zł</td>
+          </tr>
+          <tr>
+            <td><span class="priority-badge pw">WOJ-KAT</span></td>
+            <td class="num">80 zł</td>
+            <td>—</td>
+            <td class="num-gray">80 zł</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td>RAZEM</td>
+            <td class="accent">210 zł/dzień</td>
+            <td>23 reklamy</td>
+            <td style="color:#aaa;font-weight:400">nierówny podział</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <!-- PO -->
+    <div class="table-block after-block">
+      <div class="table-block-header after">🟠 PO — osobne kampanie per priorytet</div>
+      <table>
+        <thead>
+          <tr>
+            <th>Kampania / Priorytet</th>
+            <th>Liczba grup</th>
+            <th>Zł / grupę</th>
+            <th>Suma dzienna</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="priority-badge p1">P1 Pilne</span></td>
+            <td>6 grup</td>
+            <td class="num-orange">10 zł</td>
+            <td class="num">60 zł</td>
+          </tr>
+          <tr>
+            <td><span class="priority-badge p2">P2 Masażyści</span></td>
+            <td>3 grupy</td>
+            <td class="num-orange">10 zł</td>
+            <td class="num">30 zł</td>
+          </tr>
+          <tr>
+            <td><span class="priority-badge p2">P2 HORECA</span></td>
+            <td>7 grup</td>
+            <td class="num-orange">10 zł</td>
+            <td class="num">70 zł</td>
+          </tr>
+          <tr>
+            <td><span class="priority-badge p3">P3 Pozostałe</span></td>
+            <td>7 grup</td>
+            <td class="num-orange">10 zł</td>
+            <td class="num">70 zł</td>
+          </tr>
+          <tr>
+            <td><span class="priority-badge pw">WOJ-KAT</span></td>
+            <td>1 grupa</td>
+            <td class="num-orange">80 zł</td>
+            <td class="num">80 zł</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td>RAZEM</td>
+            <td>24 grupy</td>
+            <td>—</td>
+            <td>310 zł/dzień</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+
+  </div>
+
+  <!-- SUGGESTION BOX -->
+  <div class="suggest-wrap">
+    <div class="suggest-header">
+      <span>💡</span>
+      <h2>Rekomendacja — optymalizacja budżetów wg priorytetów</h2>
+    </div>
+    <div class="suggest-body">
+      <p>
+        Aby nie przekraczać dotychczasowego budżetu (~210 zł/dzień), warto zróżnicować stawkę na grupę
+        w zależności od priorytetu. Pilne wakaty powinny mieć największy budżet —
+        mniej ważne priorytety można lekko obniżyć, zachowując pełną kontrolę (brak „losowego" podziału Meta).
+      </p>
+      <table class="suggest-table">
+        <thead>
+          <tr>
+            <th>Kampania / Priorytet</th>
+            <th>Liczba grup</th>
+            <th>Propozycja zł/grupę</th>
+            <th>Suma dzienna</th>
+            <th>Uzasadnienie</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="priority-badge p1">P1 Pilne</span></td>
+            <td>6</td>
+            <td><strong>10 zł</strong></td>
+            <td><strong>60 zł</strong></td>
+            <td>Najwyższy priorytet → pełna stawka</td>
+          </tr>
+          <tr>
+            <td><span class="priority-badge p2">P2 Masażyści</span></td>
+            <td>3</td>
+            <td><strong>7 zł</strong></td>
+            <td><strong>21 zł</strong></td>
+            <td>Specjalistyczna nisza → lekkie ograniczenie</td>
+          </tr>
+          <tr>
+            <td><span class="priority-badge p2">P2 HORECA</span></td>
+            <td>7</td>
+            <td><strong>5 zł</strong></td>
+            <td><strong>35 zł</strong></td>
+            <td>Dużo grup, mniejszy budżet utrzymuje widoczność</td>
+          </tr>
+          <tr>
+            <td><span class="priority-badge p3">P3 Pozostałe</span></td>
+            <td>7</td>
+            <td><strong>5 zł</strong></td>
+            <td><strong>35 zł</strong></td>
+            <td>Minimum Meta ~5 zł — poniżej algorytm blokuje wyświetlanie</td>
+          </tr>
+          <tr>
+            <td><span class="priority-badge pw">WOJ-KAT</span></td>
+            <td>1</td>
+            <td><strong>80 zł</strong></td>
+            <td><strong>80 zł</strong></td>
+            <td>Kampania regionalna — stawka bez zmian</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td>RAZEM</td>
+            <td>24 grupy</td>
+            <td>—</td>
+            <td class="accent">231 zł/dzień</td>
+            <td style="color:#aaa;font-weight:400">≈ poziom sprzed restrukturyzacji</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+
+  <!-- INFO CARDS -->
+  <div class="info-row">
+    <div class="info-card">
+      <h3><div class="dot"></div>Problem ze strukturą PRZED</h3>
+      <ul>
+        <li><strong>Jeden budżet na całą grupę</strong> — Meta sama decydowała, która reklama w grupie dostaje więcej środków</li>
+        <li><strong>Nierówny podział</strong> — np. P1 miało 8 reklam przy 50 zł → ~6,25 zł/reklamę; P2 Masażyści 3 reklamy przy 30 zł → 10 zł/reklamę</li>
+        <li><strong>Brak kontroli</strong> nad tym, która reklama rzeczywiście „wychodzi" do ludzi</li>
+        <li><strong>Priorytety w ramach jednej kampanii</strong> — trudno analizować wyniki per wakacja</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <h3><div class="dot"></div>Zalety struktury PO</h3>
+      <ul>
+        <li><strong>Każda grupa = 1 reklama</strong> → pełna kontrola budżetu per ogłoszenie</li>
+        <li><strong>Równy start</strong> — każda reklama dostaje tyle samo, wyniki porównywalne</li>
+        <li><strong>Priorytety = osobne kampanie</strong> → raportowanie per priorytet proste i czyste</li>
+        <li><strong>Skalowanie</strong> — łatwo podnieść budżet tylko tym, które działają</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- API INTEGRATION -->
+  <div class="api-card">
+    <h2>🔗 Jak podłączyć Claude do Meta Ads API?</h2>
+    <p class="sub-head">Automatyczne raporty z wpisywaniem nazwy reklamy i podglądem wyników w czasie rzeczywistym</p>
+    <div class="api-steps">
+      <div class="api-step">
+        <div class="step-num">01</div>
+        <h4>Meta Business → Token API</h4>
+        <p>
+          Wejdź do <strong>Meta for Developers</strong>, utwórz aplikację typu „Business",
+          wygeneruj <em>Access Token</em> z uprawnieniami <code>ads_read</code> i <code>ads_management</code>.
+          Token wklej do pliku <code>.env</code> projektu.
+        </p>
+        <code>META_ACCESS_TOKEN=...</code>
+      </div>
+      <div class="api-step">
+        <div class="step-num">02</div>
+        <h4>Mini-strona do wpisywania nazwy</h4>
+        <p>
+          Prosta strona HTML z polem tekstowym (fragment nazwy reklamy).
+          Po kliknięciu „Szukaj" zapytanie idzie do backendu (np. Python/Flask),
+          który odpytuje Meta API po <code>ad_name</code> i zwraca wydatki + konwersje.
+        </p>
+        <code>GET /ads?q=Masażyści</code>
+      </div>
+      <div class="api-step">
+        <div class="step-num">03</div>
+        <h4>Wyniki na ekranie</h4>
+        <p>
+          Odpowiedź pokazuje: <strong>spend</strong> (wydane złotówki),
+          <strong>impressions</strong>, <strong>clicks</strong>,
+          <strong>konwersje</strong> i <strong>koszt/wynik</strong>.
+          Odświeżenie = nowe dane z Meta API. Koszt wdrożenia: niski
+          (tylko hosting backendu ~0–20 zł/mies.).
+        </p>
+        <code>spend · cpm · cpc · conversions</code>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    Przygotowane dla <strong>time2work</strong> · Kampania Meta Ads · Czerwiec 2026
+  </div>
+
+</body>
+</html>
